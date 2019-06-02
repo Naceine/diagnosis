@@ -55,14 +55,14 @@ class Downloader(metaclass=ABCMeta):
     def get_source(str url, dict query_dict=None):
         """Retrieve the source code of a given URL.
 
-    Args:
-        url (str): Target URL.
-        query_dict (Dict[str, str]): Key value pair to be constructed
-            for query string.
+        Args:
+            url (str): Target URL.
+            query_dict (Dict[str, str]): Key value pair to be constructed
+                for query string.
 
-    Returns:
-        str: Decoded source code of the give URL.
-    """
+        Returns:
+            str: Decoded source code of the give URL.
+        """
         cdef str response = None, data = None
         cdef dict headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3)'

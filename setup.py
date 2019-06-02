@@ -11,7 +11,7 @@
      Created on 2nd June, 2019 @ 12:45 PM.
 
    @license
-     BSD-3 Clasuse license.
+     BSD-3 Clause license.
      Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
 """
 
@@ -62,8 +62,6 @@ setup(
     package_data={
         'diagnosis/core': ['diagnosis/core/cython/**/*.pxd',
                            'diagnosis/core/cython/**/*.pyx'],
-        'diagnosis/core/data': ['diagnosis/core/cython/data/*.pxd',
-                                'diagnosis/core/cython/data/*.pyx'],
     },
     ext_modules=cythonize(ext_modules,
                           compiler_directives=compiler_directives),

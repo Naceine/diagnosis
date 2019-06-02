@@ -18,6 +18,7 @@
 
 from diagnosis.core.base import Base, Mode, Attr
 from diagnosis.core.utils import Log, File, Cache, Downloader
+from diagnosis.core.data import Data
 
 __all__ = [
     # Base class.
@@ -25,4 +26,7 @@ __all__ = [
 
     # Utils class.
     'Downloader', 'Cache', 'File', 'Log',
+
+    # Data class.
+    'Data',
 ]
