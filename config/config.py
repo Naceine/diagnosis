@@ -3,7 +3,7 @@
    @author
      Victor I. Afolabi
      Artificial Intelligence & Software Engineer.
-     Email: javafolabi@gmail.com | victor.afolabi@zephyrtel.com
+     Email: javafolabi@gmail.com
      GitHub: https://github.com/victor-iyiola
 
    @project
@@ -11,8 +11,8 @@
      Created on 2nd June, 2019 @ 12:12 PM.
 
    @license
-     BSD-3 Clause License
-     Copyright (c) 2018. Victor I. Afolabi. All rights reserved.
+     BSD-3 Clause license
+     Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
 """
 # Built-in libraries.
 import os

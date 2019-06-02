@@ -1,4 +1,4 @@
-"""Diagnosis library.
+"""Data processing pipeline.
 
    @author
      Victor I. Afolabi
@@ -7,15 +7,10 @@
      GitHub: https://github.com/victor-iyiola
 
    @project
-     File: __init__.py
-     Created on 2nd June, 2019 @ 12:08 PM.
+     File: __init__.pxd
+     Created on 02 June, 2019 @ 12:34 PM.
 
    @license
      BSD-3 Clause license.
      Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
 """
-
-
-__all__ = [
-
-]
