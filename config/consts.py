@@ -44,6 +44,7 @@ class FS(metaclass=ABCMeta):
 
     # Libraries & Include folders.
     LIB_DIR = os.path.join(PROJECT_DIR, 'diagnosis')
+    INCLUDE_DIR = os.path.join(PROJECT_DIR, 'include')
 
     # Resources & data directories.
     RESOURCE_DIR = os.path.join(PROJECT_DIR, 'resources')
