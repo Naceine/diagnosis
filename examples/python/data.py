@@ -16,10 +16,26 @@
 """
 from config.consts import FS
 from diagnosis.core.utils import Log, File
-from diagnosis.core.data import Data
+import re
+
+
+def process_features(line: str):
+    features = []
+    for symptoms_weights in line.split(', '):
+        symptom = re.findall(r'^(\w+)', symptoms_weights)[0]
+        weight = float(re.findall(r'\((.*?)\)',
+                                  symptoms_weights)[0])
+        features.append((symptom, weight))
+    return features
+
 
 if __name__ == '__main__':
+    import pandas as pd
+
     path = File.join(FS.DATA_DIR,
                      'HealthKnowledgeGraph/DerivedKnowledgeGraph_final.csv')
-    data = Data(data_dir=path)
-    Log.debug(data)
+
+    df = pd.read_csv(path)
+    features = df['Symptoms'].map(process_features)
+    labels = df['Diseases'].values
+    Log.debug(features.head())
