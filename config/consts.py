@@ -44,12 +44,6 @@ class FS(metaclass=ABCMeta):
 
     # Libraries & Include folders.
     LIB_DIR = os.path.join(PROJECT_DIR, 'diagnosis')
-    INCLUDE_DIR = os.path.join(PROJECT_DIR, 'include')
-
-    # Resources & data directories.
-    RESOURCE_DIR = os.path.join(PROJECT_DIR, 'resources')
-    CACHE_DIR = os.path.join(RESOURCE_DIR, 'cache')
-    DATA_DIR = os.path.join(RESOURCE_DIR, 'data')
 
 
 ################################################################################################
@@ -57,8 +51,6 @@ class FS(metaclass=ABCMeta):
 # | Setup configuration constants.
 # +--------------------------------------------------------------------------------------------+
 ################################################################################################
-
-
 class SETUP(metaclass=ABCMeta):
     # Global setup configuration.
     __global = Config.from_cfg(os.path.join(FS.CONFIG_DIR,

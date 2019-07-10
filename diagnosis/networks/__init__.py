@@ -1,4 +1,4 @@
-"""Data processing pipeline.
+"""`diagnosis.networks` - for building neural networks (i.e., 'dumb' input -> output mappings) used by models.
 
    @author
      Victor I. Afolabi
@@ -7,19 +7,11 @@
      GitHub: https://github.com/victor-iyiola
 
    @project
-     File: data.pyi
-     Created on 02 June, 2019 @ 12:38 PM.
+     File: __init__.py
+     Package: diagnosis.networks
+     Created on 10 July, 2019 @ 02:29 PM.
 
    @license
      BSD-3 Clause license.
      Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
 """
-# Built-in libraries.
-from typing import Any
-
-# Custom libraries.
-from diagnosis.core.base import Base
-
-
-class Data(Base):
-    def __init__(self, data_dir: str, **kwargs: Any): ...

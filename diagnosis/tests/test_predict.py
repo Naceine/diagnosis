@@ -1,4 +1,4 @@
-"""Unit-Test for data processing pipelines.
+"""Unit-Test for predicting medical symptoms.
 
    @author
      Victor I. Afolabi
@@ -7,7 +7,7 @@
      GitHub: https://github.com/victor-iyiola
 
    @project
-     File: test_data.py
+     File: test_predict.py
      Created on 02 June, 2019 @ 01:17 PM.
 
    @license
@@ -18,17 +18,10 @@
 # Built-in libraries.
 import unittest
 
-# custom libraries.
-from config.consts import FS
-from diagnosis.core import Data, File
-
 
 class TestData(unittest.TestCase):
     def setUp(self):
-        data_dir = File.join(FS.DATA_DIR,
-                             ('HealthKnowledgeGraph/'
-                              'DerivedKnowledgeGraph_final.csv'))
-        self.data = Data(data_dir=data_dir)
+        pass
 
     def tearDown(self):
         pass
