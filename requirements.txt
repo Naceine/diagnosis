@@ -1,3 +1,5 @@
+torch
+tqdm
 pandas
 PyYAML>=4.1
 cython>=0.28.1

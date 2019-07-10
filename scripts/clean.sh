@@ -146,4 +146,4 @@ else
 fi
 
 echo
-echo "âœ¨ Done."
+echo "✨ Done."
