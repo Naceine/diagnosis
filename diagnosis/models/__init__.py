@@ -1,4 +1,4 @@
-"""Diagnosis package - that can be deployed as a self-contained prediction system.
+"""`diagnosis.models` - for instantiating models, including data pre-processing and loss functions.
 
    @author
      Victor I. Afolabi
@@ -8,8 +8,8 @@
 
    @project
      File: __init__.py
-     Package: diagnosis
-     Created on 2nd June, 2019 @ 12:08 PM.
+     Package: diagnosis.models
+     Created on 10 July, 2019 @ 02:25 PM.
 
    @license
      BSD-3 Clause license.

@@ -25,13 +25,11 @@ echo -e \
   "${cyan}
   #############################################################################
   # +-----------------------------------------------------------------------+ #
-  # |       Clean Python, CMake and Cython generated and build files.       | #
+  # |                 Clean Python generated & build files.                 | #
   # +-----------------------------------------------------------------------+ #
   #############################################################################
   Tasks:${reset}
     - [ ] Clean __pycache__ & *.py[co] files.
-    - [ ] Clean CMake build files.
-    - [ ] Clean Cython build & generated C++ files.
 "
 
 # Sleep for half a second.
@@ -63,87 +61,7 @@ py_clean() {
 py_clean && echo -e "${yellow}
   Tasks:${green}
     - [x] Clean __pycache__ & *.py[co] files.${reset}
-    - [ ] Clean CMake & Cython temp build files.
-    - [ ] Clean Cython build & generated C++ files.
 "
-
-################################################################################################
-# +--------------------------------------------------------------------------------------------+
-# | CMake & Cython build directory.
-# +--------------------------------------------------------------------------------------------+
-################################################################################################
-if [[ -d "${BUILD_DIR}" ]] >/dev/null 2>&1; then
-  echo -e "${bpurple}Removing CMake & Cython temp build files...${reset}"
-  # Sleep for half a second.
-  sleep .5s
-
-  # Change directory to the build directory.
-  cd ${BUILD_DIR} || exit 1
-  # To remove all files except certain files...
-  #   $ GLOBIGNORE=*.zip:*.iso:*.txt
-  #   $ rm -v *
-  #   $ unset GLOBIGNORE
-
-  # DO NOT remove these files (separated by colons) => "e.g: *.json:*.gz:*.txt".
-  GLOBIGNORE=compile_commands.json
-
-  # Remove everything in this directory except GLOBIGNORE
-  rm -rf -v *
-
-  # Unset the GLOBIGNORE flag.
-  unset GLOBIGNORE
-
-  echo -e "${yellow}
-  Tasks:${green}
-    - [x] Clean __pycache__ & *.py[co] files.
-    - [x] Clean CMake & Cython temp build files.${reset}
-    - [ ] Clean Cython build & generated C++ files.
-  "
-else
-  echo
-  echo -e "${red}No such directory: ${ured}\"${BUILD_DIR}\"${reset}"
-fi
-
-# Sleep for half a second.
-sleep .5s
-
-# Clean extension files from a source directory.
-clean_ext() {
-  src=$1  # Source directory.
-  ext=$2  # Extension file.
-  find ${src} -name "*.${ext}" -exec rm -r {} \;
-}
-
-################################################################################################
-# +--------------------------------------------------------------------------------------------+
-# | Cython lib & src files.
-# +--------------------------------------------------------------------------------------------+
-################################################################################################
-SAGE_CORE_DIR="${DIAGNOSIS_DIR}/core"
-if [[ -d ${SAGE_CORE_DIR} ]]; then
-  # Change directory to Cython dir.
-  cd ${SAGE_CORE_DIR} || exit
-
-  echo -e "${bpurple}Removing Cython shared objects & DLLs...${reset}"
-
-  # Clean shared objects and cpp files.
-  clean_ext ${SAGE_CORE_DIR} "so"  # Remove all shared objects. *.so files.
-  clean_ext ${SAGE_CORE_DIR} "cpp" # Remove all generated cpp files.
-
-  echo -e "${yellow}
-  Tasks:${green}
-    - [x] Clean __pycache__ & *.py[co] files.
-    - [x] Clean CMake & Cython temp build files.
-    - [x] Clean Cython build & generated C++ files.${reset}
-"
-
-  # Go back to the project directory.
-  cd ${PROJECT_DIR} || exit
-
-else
-  echo
-  echo -e "${red}No such file or directory: ${ured}\"${SAGE_CORE_DIR}\"${reset}"
-fi
 
 echo
-echo "✨ Done."
+echo "?Done."

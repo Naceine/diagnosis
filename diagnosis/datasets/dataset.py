@@ -1,4 +1,4 @@
-"""Diagnosis package - that can be deployed as a self-contained prediction system.
+"""Bass class for datasets - logic for downloading data (if not available).
 
    @author
      Victor I. Afolabi
@@ -7,9 +7,9 @@
      GitHub: https://github.com/victor-iyiola
 
    @project
-     File: __init__.py
-     Package: diagnosis
-     Created on 2nd June, 2019 @ 12:08 PM.
+     File: dataset.py
+     Package: diagnosis.datasets
+     Created on 10 July, 2019 @ 02:24 PM.
 
    @license
      BSD-3 Clause license.

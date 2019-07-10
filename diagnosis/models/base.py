@@ -1,4 +1,4 @@
-"""diagnosis.core extension module.
+"""Base class for models.
 
    @author
      Victor I. Afolabi
@@ -7,19 +7,11 @@
      GitHub: https://github.com/victor-iyiola
 
    @project
-     File: __init__.pxd
-     Created on 2nd June, 2019 @ 12:21 PM.
+     File: base.py
+     Package: diagnosis.models
+     Created on 10 July, 2019 @ 02:27 PM.
 
    @license
-     BSD-3 Clause License
+     BSD-3 Clause license.
      Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
 """
-
-from base cimport Base, Attr
-
-__all__ = [
-    # From base.pxd
-    'Base', 'Attr',
-
-    # From utils.pxd
-]

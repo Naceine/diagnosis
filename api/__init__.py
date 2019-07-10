@@ -1,4 +1,4 @@
-"""Diagnosis package - that can be deployed as a self-contained prediction system.
+"""Serving predictions as a REST API.
 
    @author
      Victor I. Afolabi
@@ -8,8 +8,8 @@
 
    @project
      File: __init__.py
-     Package: diagnosis
-     Created on 2nd June, 2019 @ 12:08 PM.
+     Package: api
+     Created on 10 July, 2019 @ 02:41 PM.
 
    @license
      BSD-3 Clause license.

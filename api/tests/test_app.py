@@ -1,4 +1,4 @@
-"""Diagnosis package - that can be deployed as a self-contained prediction system.
+"""Tests that predictions are working.
 
    @author
      Victor I. Afolabi
@@ -7,9 +7,9 @@
      GitHub: https://github.com/victor-iyiola
 
    @project
-     File: __init__.py
-     Package: diagnosis
-     Created on 2nd June, 2019 @ 12:08 PM.
+     File: test_app.py
+     Package: api.tests
+     Created on 10 July, 2019 @ 02:42 PM.
 
    @license
      BSD-3 Clause license.

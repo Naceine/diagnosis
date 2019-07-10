@@ -1,14 +1,15 @@
-"""Handy utility classes.
+"""Configuration utility and handy helper classes.
 
    @author
      Victor I. Afolabi
-     Artificial Intelligence & Software Engineer.
+     Artificial Intelligence Expert & Researcher.
      Email: javafolabi@gmail.com
      GitHub: https://github.com/victor-iyiola
 
    @project
-     File: utils.pyx
-     Created on 2nd June, 2019 @ 12:23 PM.
+     File: util.py
+     Package: config
+     Created on 10 July, 2019 @ 02:19 PM.
 
    @license
      BSD-3 Clause license.
@@ -31,7 +32,7 @@ from abc import ABCMeta
 from enum import IntEnum
 from pprint import PrettyPrinter
 from logging.config import fileConfig
-from typing import Iterable, Callable
+from typing import Iterable, Callable, Dict, Any
 
 # Third-party library.
 import numpy as np
@@ -52,19 +53,19 @@ __all__ = [
 ################################################################################################
 class Downloader(metaclass=ABCMeta):
     @staticmethod
-    def get_source(str url, dict query_dict=None):
+    def get_source(url: str, query_dict: Dict[str, str]=None):
         """Retrieve the source code of a given URL.
 
-        Args:
-            url (str): Target URL.
-            query_dict (Dict[str, str]): Key value pair to be constructed
-                for query string.
+    Args:
+        url (str): Target URL.
+        query_dict (Dict[str, str]): Key value pair to be constructed
+            for query string.
 
-        Returns:
-            str: Decoded source code of the give URL.
-        """
-        cdef str response = None, data = None
-        cdef dict headers = {
+    Returns:
+        str: Decoded source code of the give URL.
+    """
+        response, data = None, None
+        headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3)'
                           ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/'
                           '50.0.2661.102 Safari/537.36'
@@ -88,7 +89,7 @@ class Downloader(metaclass=ABCMeta):
         return response
 
     @staticmethod
-    def maybe_download(str url, str download_dir=None, bint extract=False, bint overwrite=False):
+    def maybe_download(url: str, download_dir: str=None, extract: bool=False, overwrite: bool=False):
         """Download and extract the data if it doesn't already exist.
 
         Notes:
@@ -114,7 +115,7 @@ class Downloader(metaclass=ABCMeta):
         # Filename for saving the file downloaded from the internet.
         # Use the filename from the URL and add it to the download_dir.
         download_dir = download_dir or "downloads/"
-        cdef str filename = File.join(download_dir, File.basename(url))
+        filename = File.join(download_dir, File.basename(url))
 
         # Check if the file already exists.
         # If it exists then we assume it has also been extracted,
@@ -140,7 +141,7 @@ class Downloader(metaclass=ABCMeta):
         return filename
 
     @staticmethod
-    def maybe_extract(str file, str extract_dir=None, bint overwrite=False):
+    def maybe_extract(file: str, extract_dir: str=None, overwrite: bool=False):
         # Ensure the file exists.
         if not File.is_file(file):
             raise FileNotFoundError('"{}" not found!'.format(file))
@@ -158,7 +159,7 @@ class Downloader(metaclass=ABCMeta):
         File.make_dirs(extract_dir)
 
         # Read mode.
-        cdef str mode = "r"
+        mode = "r"
 
         if zipfile.is_zipfile(file):
             Extractor = zipfile.ZipFile
@@ -188,7 +189,7 @@ class Downloader(metaclass=ABCMeta):
 ################################################################################################
 class File(metaclass=ABCMeta):
     @staticmethod
-    def make_dirs(str path, int verbose=0):
+    def make_dirs(path: str, verbose: int=0):
         """Create Directory if it doesn't exist.
 
         Args:
@@ -214,7 +215,7 @@ class File(metaclass=ABCMeta):
                 Log.info('"{}" has been created.'.format(path))
 
     @staticmethod
-    def remove(str path, int verbose=0):
+    def remove(path: str, verbose: int=0):
         """Remove directories & files if it already exist.
 
         Args:
@@ -251,7 +252,7 @@ class File(metaclass=ABCMeta):
             Log.info('"{}" has been created.'.format(path))
 
     @staticmethod
-    def get_dirs(str path, exclude: Iterable[str] = None, bint optimize = False):
+    def get_dirs(path: str, exclude: Iterable[str] = None, optimize: bool=False):
         """Retrieve all directories in a given path.
 
         Args:
@@ -273,7 +274,7 @@ class File(metaclass=ABCMeta):
         return File.listdir(path, exclude=exclude, dirs_only=True, optimize=optimize)
 
     @staticmethod
-    def get_files(str path, exclude: Iterable[str] = None, bint optimize = False):
+    def get_files(path: str, exclude: Iterable[str] = None, optimize: bool=False):
         """Retrieve all files in a given path.
 
         Args:
@@ -295,9 +296,9 @@ class File(metaclass=ABCMeta):
         return File.listdir(path, exclude=exclude, files_only=True, optimize=optimize)
 
     @staticmethod
-    def listdir(str path, exclude: Iterable[str] = None,
-                bint dirs_only=False, bint files_only=False,
-                bint optimize=False):
+    def listdir(path: str, exclude: Iterable[str] = None,
+                dirs_only: bool=False, files_only: bool=False,
+                optimize: bool=False):
         """Retrieve files/directories in a given path.
 
         Args:
@@ -345,7 +346,7 @@ class File(metaclass=ABCMeta):
         return paths
 
     @staticmethod
-    def join(str path, *paths: Iterable[str]):
+    def join(path: str, *paths: Iterable[str]):
         """Join two or more paths together.
 
         Args:
@@ -358,7 +359,7 @@ class File(metaclass=ABCMeta):
         return os.path.join(path, *paths)
 
     @staticmethod
-    def exists(str path):
+    def exists(path: str):
         """Test whether a path exists.
 
         Args:
@@ -374,7 +375,7 @@ class File(metaclass=ABCMeta):
         return True
 
     @staticmethod
-    def is_file(str path):
+    def is_file(path: str):
         """Test whether a path is a regular file.
 
         Args:
@@ -391,7 +392,7 @@ class File(metaclass=ABCMeta):
         return stat.S_ISREG(st.st_mode)
 
     @staticmethod
-    def is_dir(str path):
+    def is_dir(path: str):
         """Test whether a path is an existing directory.
 
         Args:
@@ -408,7 +409,7 @@ class File(metaclass=ABCMeta):
         return stat.S_ISDIR(st.st_mode)
 
     @staticmethod
-    def rel_path(str path, str start=None):
+    def rel_path(path: str, start: str=None):
         """Return a relative version of a path.
 
         Args:
@@ -422,7 +423,7 @@ class File(metaclass=ABCMeta):
         return os.path.relpath(path, start)
 
     @staticmethod
-    def abs_path(str path):
+    def abs_path(path: str):
         """Return the absolute version of a path.
 
         Args:
@@ -435,7 +436,7 @@ class File(metaclass=ABCMeta):
         return os.path.abspath(path)
 
     @staticmethod
-    def basename(str path):
+    def basename(path: str):
         """Returns the final component of a pathname.
 
         Args:
@@ -447,7 +448,7 @@ class File(metaclass=ABCMeta):
         return os.path.split(path)[1]
 
     @staticmethod
-    def filename(str path):
+    def filename(path: str):
         """Returns the final component of a pathname without extension.
 
         Args:
@@ -459,7 +460,7 @@ class File(metaclass=ABCMeta):
         return os.path.splitext(File.basename(path))[0]
 
     @staticmethod
-    def dirname(str path):
+    def dirname(path: str):
         """Returns the directory component of a pathname.
 
         Args:
@@ -471,7 +472,7 @@ class File(metaclass=ABCMeta):
         return os.path.split(path)[0]
 
     @staticmethod
-    def ext(str path):
+    def ext(path: str):
         """Returns extension of a give path.
 
         Args:
@@ -552,7 +553,7 @@ class Log(metaclass=ABCMeta):
         Log._logger.exception(*args, **kwargs)
 
     @staticmethod
-    def fatal(*args, int code=-1, **kwargs):
+    def fatal(*args, code: int=-1, **kwargs):
         Log._logger.fatal(*args, **kwargs)
         exit(code)
 
@@ -577,7 +578,7 @@ class Log(metaclass=ABCMeta):
         Log._logger.log(Log.level, *args, **kwargs)
 
     @staticmethod
-    def pretty(args, stream=None, size_t indent=1, size_t width=80, size_t depth=0, *, bint compact=False):
+    def pretty(args, stream=None, indent: int=1,  width: int=80, depth: int=0, *, compact: bool=False):
         """Handle pretty printing operations onto a stream using a set of configured parameters.
 
         Args:
@@ -599,7 +600,7 @@ class Log(metaclass=ABCMeta):
         printer.pprint(args)
 
     @staticmethod
-    def progress(int count, int max_count):
+    def progress(count: int, max_count: int):
         """Prints task progress *(in %)*.
 
         Args:
@@ -608,18 +609,18 @@ class Log(metaclass=ABCMeta):
         """
 
         # Percentage completion.
-        cdef float pct_complete = count / max_count
+        pct_complete = count / max_count
 
         # Status-message. Note the \r which means the line should
         # overwrite itself.
-        cdef str msg = "\r- Progress: {0:.02%}".format(pct_complete)
+        msg = "\r- Progress: {0:.02%}".format(pct_complete)
 
         # Print it.
         sys.stdout.write(msg)
         sys.stdout.flush()
 
     @staticmethod
-    def report_hook(int block_no, bytes read_size, bytes file_size):
+    def report_hook(block_no: int, read_size: bytes, file_size: bytes):
         """Calculates download progress of downloaded files.
 
         Args:
@@ -632,9 +633,9 @@ class Log(metaclass=ABCMeta):
         """
         # Calculates download progress given the block number, a read size,
         #  and the total file size of the URL target.
-        cdef float pct_complete = float(block_no * read_size) / float(file_size)
+        pct_complete = float(block_no * read_size) / float(file_size)
 
-        cdef str msg = "\r\t -Download progress {:.02%}".format(pct_complete)
+        msg = "\r\t -Download progress {:.02%}".format(pct_complete)
         sys.stdout.stdwrite(msg)
         sys.stdout.flush()
 
@@ -646,7 +647,7 @@ class Log(metaclass=ABCMeta):
 ################################################################################################
 class Cache(metaclass=ABCMeta):
     @staticmethod
-    def cache(str cache_path, fn: Callable, bint use_numpy=False, int verbose=1, *args, **kwargs):
+    def cache(cache_path: str, fn: Callable,  use_numpy: bool=False, verbose: int=1, *args, **kwargs):
         """Cache-wrapper for a function or class.
 
         Notes:
@@ -686,7 +687,8 @@ class Cache(metaclass=ABCMeta):
                     obj = pickle.load(file)
 
             if verbose:
-                Log.info(f"- Data loaded from cache-file: {File.rel_path(cache_path)}")
+                Log.info(
+                    f"- Data loaded from cache-file: {File.rel_path(cache_path)}")
         else:
             # The cache-file does not exist.
 
@@ -701,18 +703,20 @@ class Cache(metaclass=ABCMeta):
                 if isinstance(obj, np.ndarray):
                     np.save(cache_path, obj)
                 else:
-                    raise TypeError(f"Expected a NumPy object, got {type(obj)}")
+                    raise TypeError(
+                        f"Expected a NumPy object, got {type(obj)}")
             else:
                 with open(cache_path, mode='wb') as file:
                     pickle.dump(obj, file)
 
             if verbose:
-                Log.info(f"- Data saved to cache-file: {File.rel_path(cache_path)}")
+                Log.info(
+                    f"- Data saved to cache-file: {File.rel_path(cache_path)}")
 
         return obj
 
     @staticmethod
-    def cache_numpy(str cache_path, fn: Callable, int verbose=1, *args, **kwargs):
+    def cache_numpy(cache_path: str, fn: Callable, verbose: int=1, *args, **kwargs):
         """Cache-wrapper for a function or class.
 
         Notes:
@@ -743,7 +747,7 @@ class Cache(metaclass=ABCMeta):
                                  verbose=verbose, *args, **kwargs)
 
     @staticmethod
-    def convert_numpy2pickle(str in_path, str out_path):
+    def convert_numpy2pickle(in_path: str, out_path: str):
         """Convert a numpy-file to pickle-file.
 
         Notes:

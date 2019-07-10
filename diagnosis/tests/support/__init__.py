@@ -1,4 +1,4 @@
-"""Diagnosis package - that can be deployed as a self-contained prediction system.
+"""Support package for loading raw data used by tests.
 
    @author
      Victor I. Afolabi
@@ -8,8 +8,8 @@
 
    @project
      File: __init__.py
-     Package: diagnosis
-     Created on 2nd June, 2019 @ 12:08 PM.
+     Package: diagnosis.tests.support
+     Created on 10 July, 2019 @ 02:19 PM.
 
    @license
      BSD-3 Clause license.
