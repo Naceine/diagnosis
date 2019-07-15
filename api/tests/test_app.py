@@ -15,3 +15,14 @@
      BSD-3 Clause license.
      Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
 """
+import unittest
+from api.app import app
+
+
+class TestApp(unittest.TestCase):
+    def test_app(self):
+        app.testing = True
+        client = app.test_client()
+
+        response = client.get('/')
+        assert response.status_code == 200

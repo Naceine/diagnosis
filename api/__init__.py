@@ -15,3 +15,6 @@
      BSD-3 Clause license.
      Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
 """
+from api.app import app
+from api.router import router
+from api.config import Development, Production, Testing
