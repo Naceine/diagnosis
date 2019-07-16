@@ -1,21 +1,24 @@
-import json
 import os
 import re
+import json
+
+from time import time
 from collections import defaultdict
 from multiprocessing import Pool, cpu_count
-from time import time
 
 import faiss
+import gpt2_estimator
+
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+
 from tqdm import tqdm
 
-import gpt2_estimator
-from docproduct.dataset import convert_text_to_feature
-from docproduct.models import MedicalQAModelwithBert
-from docproduct.tokenization import FullTokenizer
-from keras_bert.loader import checkpoint_loader
+from .models import MedicalQAModelwithBert
+from diagnosis.datasets.dataset import convert_text_to_feature
+from diagnosis.datasets.tokenization import FullTokenizer
+from diagnosis.networks.keras_bert.loader import checkpoint_loader
 
 
 def load_weight(model, bert_ffn_weight_file=None, ffn_weight_file=None):

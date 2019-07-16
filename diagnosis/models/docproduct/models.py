@@ -1,17 +1,18 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
+
+
+import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-import numpy as np
 
 import tensorflow as tf
 import tensorflow.keras.backend as K
 from tensorflow import keras
 
-from docproduct.bert import build_model_from_config
-
-from keras_bert.loader import load_model_weights_from_checkpoint
+from .bert import build_model_from_config
+from diagnosis.networks.keras_bert.loader import load_model_weights_from_checkpoint
 
 
 class FFN(tf.keras.layers.Layer):

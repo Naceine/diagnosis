@@ -4,11 +4,13 @@ import tensorflow as tf
 from tensorflow import keras
 import tensorflow.keras.backend as K
 
-from keras_bert.keras_pos_embd import PositionEmbedding
-from keras_bert.layers import get_inputs, get_embedding, TokenEmbedding, EmbeddingSimilarity, Masked, Extract
-from keras_bert.keras_layer_normalization import LayerNormalization
-from keras_bert.keras_multi_head import MultiHeadAttention
-from keras_bert.keras_position_wise_feed_forward import FeedForward
+from diagnosis.networks.keras_bert.keras_pos_embd import PositionEmbedding
+from diagnosis.networks.keras_bert.layers import (get_inputs, get_embedding,
+                                                  TokenEmbedding, EmbeddingSimilarity,
+                                                  Masked, Extract)
+from diagnosis.networks.keras_bert.keras_layer_normalization import LayerNormalization
+from diagnosis.networks.keras_bert.keras_multi_head import MultiHeadAttention
+from diagnosis.networks.keras_bert.keras_position_wise_feed_forward import FeedForward
 
 
 def gelu(x):
