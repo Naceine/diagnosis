@@ -15,3 +15,8 @@
      BSD-3 Clause license.
      Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
 """
+from .train_data_to_embedding import train_data_to_embedding
+from .train_embedding_to_gpt2_data import train_embedding_to_gpt2_data
+from .train_ffn import train_ffn
+from .train_bertffn import train_bertffn
+from .train_gpt2 import train_gpt2
