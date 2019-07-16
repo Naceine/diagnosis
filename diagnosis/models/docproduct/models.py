@@ -11,7 +11,7 @@ import tensorflow as tf
 import tensorflow.keras.backend as K
 from tensorflow import keras
 
-from .bert import build_model_from_config
+from diagnosis.models.bert import build_model_from_config
 from diagnosis.networks.keras_bert.loader import load_model_weights_from_checkpoint
 
 

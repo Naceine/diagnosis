@@ -16,3 +16,4 @@
      Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
 """
 from .docproduct import *
+from . import bert
