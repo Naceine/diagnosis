@@ -1,3 +1,3 @@
 # weights
 
-Weights for production models.
+Pre-trained Weights for production models.
