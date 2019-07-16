@@ -1,11 +1,34 @@
-import glob
-import numpy as np
+"""Load MQA dataset.
+
+   @author
+     Victor I. Afolabi
+     Artificial Intelligence Expert & Researcher.
+     Email: javafolabi@gmail.com
+     GitHub: https://github.com/victor-iyiola
+
+   @project
+     File: mqa_load_dataset.py
+     Package: diagnosis.datasets
+     Created on 16 July, 2019 @ 02:59 PM.
+
+   @license
+     BSD-3 Clause license.
+     Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
+"""
+
 import os
-import random
-import tensorflow.compat.v1 as tf
-import tqdm
 import csv
+import glob
+import random
+
+import tqdm
+import numpy as np
 import pandas as pd
+import tensorflow.compat.v1 as tf
+
+__all__ = [
+    'load_dataset', 'binary_search', 'Sampler',
+]
 
 
 def load_dataset(enc, path, combine, pretokenize=True, topk=10):

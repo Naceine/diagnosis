@@ -18,7 +18,7 @@
 import argparse
 import infermedica_api
 
-from config.util import Log
+from diagnosis.core import Log
 
 args = None
 
