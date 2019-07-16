@@ -15,3 +15,4 @@
      BSD-3 Clause license.
      Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
 """
+from .docproduct import *
