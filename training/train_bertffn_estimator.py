@@ -1,14 +1,15 @@
-import argparse
 import os
+import argparse
 
 import tensorflow as tf
 from tensorflow import keras
 import tensorflow.keras.backend as K
 
-from diagnosis.models.docproduct.dataset import create_dataset_for_bert
+from diagnosis.datasets.tokenization import FullTokenizer
+from diagnosis.datasets.dataset import create_dataset_for_bert
+
 from diagnosis.models.docproduct.models import MedicalQAModelwithBert
 from diagnosis.models.docproduct.loss import qa_pair_loss, qa_pair_cross_entropy_loss
-from diagnosis.models.docproduct.tokenization import FullTokenizer
 from diagnosis.models.docproduct.metrics import qa_pair_batch_accuracy
 
 DEVICE = ["/gpu:0", "/gpu:1"]

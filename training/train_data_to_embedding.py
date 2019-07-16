@@ -1,9 +1,9 @@
-import argparse
 import os
+import argparse
 from glob import glob
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from diagnosis.models.docproduct.predictor import QAEmbed
 

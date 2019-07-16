@@ -3,7 +3,7 @@ import argparse
 import tensorflow as tf
 import tensorflow.keras.backend as K
 
-from diagnosis.models.docproduct.dataset import create_dataset_for_ffn
+from diagnosis.datasets.dataset import create_dataset_for_ffn
 from diagnosis.models.docproduct.models import MedicalQAModel
 from diagnosis.models.docproduct.loss import qa_pair_loss, qa_pair_cross_entropy_loss
 from diagnosis.models.docproduct.metrics import qa_pair_batch_accuracy

@@ -1,14 +1,17 @@
-import pandas as pd
-import numpy as np
 import os
 import csv
-from tqdm import tqdm
 import argparse
+
 from glob import glob
-import faiss
-from multiprocessing import Pool, cpu_count
 from math import ceil
 from collections import defaultdict
+from multiprocessing import Pool, cpu_count
+
+import faiss
+import numpy as np
+import pandas as pd
+
+from tqdm import tqdm
 
 
 def train_embedding_to_gpt2_data(
@@ -16,8 +19,7 @@ def train_embedding_to_gpt2_data(
     output_path='gpt2_train_data/bertffn_crossentropy_gpt2_train_data.zip',
     number_samples=10,
     batch_size=512,
-    search_by='answer'
-    ):
+    search_by='answer'):
     """Function to create gpt2 training data
 
     For each question, we take number_samples similar question/answer pair as prefix of GPT2 model.

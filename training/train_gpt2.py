@@ -8,7 +8,7 @@ import tensorflow_estimator as tf_estimator
 
 import gpt2_estimator
 
-from diagnosis.models.docproduct.mqa_load_dataset import Sampler, load_dataset
+from diagnosis.datasets.mqa_load_dataset import Sampler, load_dataset
 
 DEVICE = ["/gpu:0", "/gpu:1", "/gpu:2", "/gpu:3"]
 
