@@ -27,10 +27,11 @@ import pandas as pd
 
 from tqdm import tqdm
 
+from config.consts import FS
 
 def train_embedding_to_gpt2_data(
-        data_path='qa_embeddings/bertffn_crossentropy.zip',
-        output_path='gpt2_train_data/bertffn_crossentropy_gpt2_train_data.zip',
+        data_path=FS.EMBEDDINGS.BERT_FFN_ZIP,
+        output_path=FS.EMBEDDINGS.BERT_FFN_GPT2,
         number_samples=10,
         batch_size=512,
         search_by='answer'):

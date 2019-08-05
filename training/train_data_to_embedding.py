@@ -48,7 +48,7 @@ def read_all(data_path):
 
 def train_data_to_embedding(model_path=FS.MODELS.BERT_FFN,
                             data_path=FS.DATA.MQA,
-                            output_path='qa_embeddings/bertffn_crossentropy.zip',
+                            output_path=FS.EMBEDDINGS.BERT_FFN_ZIP,
                             pretrained_path=FS.PRE_TRAINED.PUB_MED):
     """Function to generate similarity embeddings for QA pairs.
 

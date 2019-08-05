@@ -46,6 +46,7 @@ class FS(metaclass=ABCMeta):
     ASSETS_DIR = os.path.join(PROJECT_DIR, 'assets')
     DATA_DIR = os.path.join(ASSETS_DIR, 'data')
     MODEL_DIR = os.path.join(ASSETS_DIR, 'models')
+    EMBEDDING_DIR = os.path.join(ASSETS_DIR, 'qa_embeddings')
 
     # Data folder.
     __DataDir = namedtuple('__DataDir', ['MQA'])
@@ -65,12 +66,19 @@ class FS(metaclass=ABCMeta):
     PRE_TRAINED = __PreTrainedDir(GPT2=os.path.join(MODEL_DIR, '117M'),
                                   PUB_MED=os.path.join(MODEL_DIR, 'pubmed_pmc_470k'))
 
+    # Embedding files.
+    __Embedding = namedtuple('__Embedding', ['BERT_FFN_PKL', 'BERT_FFN_ZIP', 'BERT_FFN_GPT2'])
+    EMBEDDINGS = __Embedding(BERT_FFN_PKL=os.path.join(EMBEDDING_DIR, 'bertffn_crossentropy.pkl'),
+                             BERT_FFN_ZIP=os.path.join(EMBEDDING_DIR, 'bertffn_crossentropy.zip'),
+                             BERT_FFN_GPT2=os.path.join(DATA_DIR, 'bertffn_crossentropy_gpt2_train_data.zip'))
 
 ################################################################################################
 # +--------------------------------------------------------------------------------------------+
 # | DOWNLOADS: Data URL, Resource URLs & File IDs.
 # +--------------------------------------------------------------------------------------------+
 ################################################################################################
+
+
 class DOWNLOADS(metaclass=ABCMeta):
     G_DRIVE_BASE = 'https://docs.google.com/uc?export=download'
 

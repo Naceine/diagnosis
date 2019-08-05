@@ -17,15 +17,18 @@ from config.util import Log
      BSD-3 Clause license.
      Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
 """
-import sys
-sys.path.append('..')
+# import sys
+# sys.path.append('..')
 
 from config.util import Log
+from config.consts import FS
+
+from diagnosis.models.docproduct.predictor import GenerateQADoc, RetreiveQADoc
 
 
-def generateQADoc(pretrained_path='pubmed_pmc_470k/', ffn_weight_file=None,
-                  bert_ffn_weight_file='models/bertffn_crossentropy/bertffn',
-                  embedding_file='qa_embeddings/bertffn_crossentropy.pkl'):
+def generateQADoc(pretrained_path=FS.PRE_TRAINED.PUB_MED, ffn_weight_file=None,
+                  bert_ffn_weight_file=FS.MODELS.BERT_FFN,
+                  embedding_file=FS.EMBEDDINGS.BERT_FFN_PKL):
 
     doc = GenerateQADoc(pretrained_path=pretrained_path,
                         ffn_weight_file=None,
@@ -37,9 +40,9 @@ def generateQADoc(pretrained_path='pubmed_pmc_470k/', ffn_weight_file=None,
                           search_by='question', topk=5, answer_only=False))
 
 
-def retrieveQADoc(pretrained_path='pubmed_pmc_470k/', ffn_weight_file=None,
-                  bert_ffn_weight_file='models/bertffn_crossentropy/bertffn',
-                  embedding_file='qa_embeddings/bertffn_crossentropy.pkl'):
+def retrieveQADoc(pretrained_path=FS.PRE_TRAINED.PUB_MED, ffn_weight_file=None,
+                  bert_ffn_weight_file=FS.MODELS.BERT_FFN,
+                  embedding_file=FS.EMBEDDINGS.BERT_FFN_PKL):
 
     doc = RetreiveQADoc(pretrained_path=pretrained_path,
                         ffn_weight_file=None,
