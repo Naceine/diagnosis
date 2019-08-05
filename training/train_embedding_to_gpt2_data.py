@@ -1,11 +1,25 @@
+"""Create the GPT-2 training data.
+
+   @author
+     Victor I. Afolabi
+     Artificial Intelligence Expert & Researcher.
+     Email: javafolabi@gmail.com
+     GitHub: https://github.com/victor-iyiola
+
+   @project
+     File: train_embedding_to_gpt2_data.py
+     Package: training
+     Created on 5 August, 2019 @ 02:25 PM.
+
+   @license
+     BSD-3 Clause license.
+     Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
+"""
 import os
-import csv
-import argparse
 
 from glob import glob
 from math import ceil
 from collections import defaultdict
-from multiprocessing import Pool, cpu_count
 
 import faiss
 import numpy as np
@@ -15,18 +29,18 @@ from tqdm import tqdm
 
 
 def train_embedding_to_gpt2_data(
-    data_path='qa_embeddings/bertffn_crossentropy.zip',
-    output_path='gpt2_train_data/bertffn_crossentropy_gpt2_train_data.zip',
-    number_samples=10,
-    batch_size=512,
-    search_by='answer'):
-    """Function to create gpt2 training data
+        data_path='qa_embeddings/bertffn_crossentropy.zip',
+        output_path='gpt2_train_data/bertffn_crossentropy_gpt2_train_data.zip',
+        number_samples=10,
+        batch_size=512,
+        search_by='answer'):
+    """Function to create gpt2 training data.
 
     For each question, we take number_samples similar question/answer pair as prefix of GPT2 model.
     For more details:
-    https://github.com/Santosh-Gupta/DocProduct/blob/master/README.md
+        https://github.com/Santosh-Gupta/DocProduct/blob/master/README.md
 
-    Keyword Arguments:
+    Arguments:
         data_path {str} -- Embedding data path, usually the output file of train_data_to_embedding (default: {'qa_embeddings/bertffn_crossentropy.zip'})
         output_path {str} -- GPT2 training data output path (default: {'gpt2_train_data/bertffn_crossentropy_gpt2_train_data.zip'})
         number_samples {int} -- Number of sample per question (default: {10})
@@ -39,6 +53,7 @@ def train_embedding_to_gpt2_data(
     else:
         qa = pd.read_parquet(data_path)
     # qa = pd.read_parquet(data_path)
+
     question_bert = qa["Q_FFNN_embeds"].tolist()
     answer_bert = qa["A_FFNN_embeds"].tolist()
     question_bert = np.array(question_bert)
@@ -48,7 +63,6 @@ def train_embedding_to_gpt2_data(
     answer_bert = answer_bert.astype('float32')
 
     answer_index = faiss.IndexFlatIP(answer_bert.shape[-1])
-
     question_index = faiss.IndexFlatIP(question_bert.shape[-1])
 
     faiss.normalize_L2(question_bert)
@@ -76,14 +90,15 @@ def train_embedding_to_gpt2_data(
     # for k in tqdm(range(1000), mininterval=30, maxinterval=60):
     for k in tqdm(range(0, qa.shape[0], batch_size), total=steps):
         start_ind = k
-        end_ind = k+batch_size
+        end_ind = k + batch_size
 
-        a_batch_index = topKforGPT2(
-            start_ind, end_ind, int(number_samples), search_by=search_by)
+        a_batch_index = topKforGPT2(start_ind, end_ind,
+                                    int(number_samples),
+                                    search_by=search_by)
+
         for i, a_index in enumerate(a_batch_index):
-
-            df_dict['question'].append(qa["question"].iloc[k+i])
-            df_dict['answer'].append(qa["answer"].iloc[k+i])
+            df_dict['question'].append(qa["question"].iloc[k + i])
+            df_dict['answer'].append(qa["answer"].iloc[k + i])
 
             for ii in range(number_samples):
                 df_dict['question{0}'.format(ii)].append(
@@ -92,10 +107,8 @@ def train_embedding_to_gpt2_data(
                     qa.answer.iloc[a_index[ii]])
 
     df = pd.DataFrame(df_dict)
-    df.to_parquet(
-        output_path, index=False)
+    df.to_parquet(output_path, index=False)
 
 
 if __name__ == "__main__":
-
     train_embedding_to_gpt2_data()

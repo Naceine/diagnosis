@@ -15,3 +15,5 @@
      BSD-3 Clause license.
      Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
 """
+import sys
+sys.path.append('..')

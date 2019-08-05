@@ -2,7 +2,6 @@ import os
 import re
 import json
 
-from time import time
 from collections import defaultdict
 from multiprocessing import Pool, cpu_count
 

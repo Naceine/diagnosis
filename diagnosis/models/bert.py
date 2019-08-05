@@ -133,12 +133,15 @@ class Bert(keras.Model):
         def _wrap_layer(name, input_layer, build_func, norm_layer, dropout_rate=0.0, trainable=True):
             """Wrap layers with residual, normalization and dropout.
 
-            :param name: Prefix of names for internal layers.
-            :param input_layer: Input layer.
-            :param build_func: A callable that takes the input tensor and generates the output tensor.
-            :param dropout_rate: Dropout rate.
-            :param trainable: Whether the layers are trainable.
-            :return: Output layer.
+            Arguments:
+                name (str): Prefix of names for internal layers.
+                input_layer (keras.layers.Layer): Input layer.
+                build_func (Callable): A callable that takes the input tensor and generates the output tensor.
+                dropout_rate (float): Dropout rate.
+                trainable (bool): Whether the layers are trainable.
+
+            Returns:
+                keras.layers.Layer - Output layer.
             """
             build_output = build_func(input_layer)
             if dropout_rate > 0.0:
@@ -181,18 +184,20 @@ class Bert(keras.Model):
         return output_tensor_list
 
 
-def build_model_from_config(config_file,
-                            training=False,
-                            trainable=None,
-                            seq_len=None,
-                            build=True):
+def build_model_from_config(config_file, training=False,
+                            trainable=None, seq_len=None, build=True):
     """Build the model from config file.
-    :param config_file: The path to the JSON configuration file.
-    :param training: If training, the whole model will be returned.
-    :param trainable: Whether the model is trainable.
-    :param seq_len: If it is not None and it is shorter than the value in the config file, the weights in
-                    position embeddings will be sliced to fit the new length.
-    :return: model and config
+
+    Arguments:
+        config_file (str): The path to the JSON configuration file.
+        training (bool): If training, the whole model will be returned.
+        trainable (bool): Whether the model is trainable.
+        seq_len (int): If it is not None and it is shorter than the value in
+                    the config file, the weights in position embeddings will
+                    be sliced to fit the new length.
+
+    Returns:
+        Tuple[keras.Model, Dict[str, Any]] - BERT model and config.
     """
     with open(config_file, 'r') as reader:
         config = json.loads(reader.read())
