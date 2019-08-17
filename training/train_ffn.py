@@ -1,39 +1,60 @@
-import argparse
+"""Train the FFN model with mutliple or single GPU.
 
+   @author
+     Victor I. Afolabi
+     Artificial Intelligence Expert & Researcher.
+     Email: javafolabi@gmail.com
+     GitHub: https://github.com/victor-iyiola
+
+   @project
+     File: train_ffn.py
+     Package: training
+     Created on 5 August, 2019 @ 02:25 PM.
+
+   @license
+     BSD-3 Clause license.
+     Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
+"""
 import tensorflow as tf
 import tensorflow.keras.backend as K
+
+from config.consts import FS
 
 from diagnosis.datasets.dataset import create_dataset_for_ffn
 from diagnosis.models.docproduct.models import MedicalQAModel
 from diagnosis.models.docproduct.loss import qa_pair_loss, qa_pair_cross_entropy_loss
 from diagnosis.models.docproduct.metrics import qa_pair_batch_accuracy
 
-DEVICE = ["/gpu:0", "/gpu:1"]
+DEVICE = ["/gpu:0", "/gpu:1", "/gpu:2", "/gpu:3"]
 
 
 def multi_gpu_train(batch_size, num_gpu, data_path, num_epochs, model_path, loss=qa_pair_loss):
     mirrored_strategy = tf.distribute.MirroredStrategy(
-        devices=DEVICE[:num_gpu])
-    global_batch_size = batch_size*num_gpu
-    learning_rate = learning_rate*1.5**num_gpu
+        devices=DEVICE[:num_gpu]
+    )
+    global_batch_size = batch_size * num_gpu
+    learning_rate = learning_rate * 1.5 ** num_gpu
+
     with mirrored_strategy.scope():
-        d = create_dataset_for_ffn(
-            data_path, batch_size=global_batch_size, shuffle_buffer=100000)
+        d = create_dataset_for_ffn(data_path,
+                                   batch_size=global_batch_size,
+                                   shuffle_buffer=100_000)
 
         d_iter = mirrored_strategy.make_dataset_iterator(d)
 
         medical_qa_model = tf.keras.Sequential()
         medical_qa_model.add(tf.keras.layers.Input((2, 768)))
         medical_qa_model.add(MedicalQAModel())
+
         optimizer = tf.keras.optimizers.Adam(lr=learning_rate)
-        medical_qa_model.compile(
-            optimizer=optimizer, loss=loss)
+        medical_qa_model.compile(optimizer=optimizer, loss=loss)
 
     epochs = num_epochs
     loss_metric = tf.keras.metrics.Mean()
 
-    medical_qa_model.fit(d_iter, epochs=epochs, metrics=[
-                         qa_pair_batch_accuracy])
+    medical_qa_model.fit(d_iter,
+                         epochs=epochs,
+                         metrics=[qa_pair_batch_accuracy])
     medical_qa_model.save_weights(model_path)
     return medical_qa_model
 
@@ -41,26 +62,30 @@ def multi_gpu_train(batch_size, num_gpu, data_path, num_epochs, model_path, loss
 def single_gpu_train(batch_size, num_gpu, data_path, num_epochs, model_path, loss=qa_pair_loss):
     global_batch_size = batch_size*num_gpu
     learning_rate = learning_rate
-    d = create_dataset_for_ffn(
-        data_path, batch_size=global_batch_size, shuffle_buffer=500000)
-    eval_d = create_dataset_for_ffn(
-        data_path, batch_size=batch_size, mode='eval')
+    d = create_dataset_for_ffn(data_path,
+                               batch_size=global_batch_size,
+                               shuffle_buffer=500_000)
+    eval_d = create_dataset_for_ffn(data_path,
+                                    batch_size=batch_size,
+                                    mode='eval')
 
     medical_qa_model = MedicalQAModel()
     optimizer = tf.keras.optimizers.Adam(lr=learning_rate)
-    medical_qa_model.compile(
-        optimizer=optimizer, loss=loss, metrics=[
-            qa_pair_batch_accuracy])
+    medical_qa_model.compile(optimizer=optimizer,
+                             loss=loss,
+                             metrics=[qa_pair_batch_accuracy])
 
     epochs = num_epochs
 
+    # Train & save model's weights.
     medical_qa_model.fit(d, epochs=epochs, validation_data=eval_d)
     medical_qa_model.save_weights(model_path)
+
     return medical_qa_model
 
 
-def train_ffn(model_path='models/ffn_crossentropy/ffn',
-              data_path='data/mqa_csv',
+def train_ffn(model_path=FS.MODELS.FFN,
+              data_path=FS.DATA.MQA,
               num_epochs=300,
               num_gpu=1,
               batch_size=64,
@@ -68,19 +93,21 @@ def train_ffn(model_path='models/ffn_crossentropy/ffn',
               validation_split=0.2,
               loss='categorical_crossentropy'):
 
-    if loss == 'categorical_crossentropy':
-        loss_fn = qa_pair_cross_entropy_loss
-    else:
-        loss_fn = qa_pair_loss
-    eval_d = create_dataset_for_ffn(
-        data_path, batch_size=batch_size, mode='eval')
+    loss_fn = (qa_pair_cross_entropy_loss
+               if loss == 'categorical_crossentropy' else qa_pair_loss)
+
+    eval_d = create_dataset_for_ffn(data_path,
+                                    batch_size=batch_size,
+                                    mode='eval')
 
     if num_gpu > 1:
-        medical_qa_model = multi_gpu_train(
-            batch_size, num_gpu, data_path, num_epochs, model_path, loss_fn)
+        medical_qa_model = multi_gpu_train(batch_size, num_gpu,
+                                           data_path, num_epochs,
+                                           model_path, loss_fn)
     else:
-        medical_qa_model = single_gpu_train(
-            batch_size, num_gpu, data_path, num_epochs, model_path, loss_fn)
+        medical_qa_model = single_gpu_train(batch_size, num_gpu,
+                                            data_path, num_epochs,
+                                            model_path, loss_fn)
 
     medical_qa_model.summary()
     medical_qa_model.save_weights(model_path, overwrite=True)

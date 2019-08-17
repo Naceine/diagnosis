@@ -1,54 +1,84 @@
+"""Train the BERT-FFN network with the estimator API.
+
+   @author
+     Victor I. Afolabi
+     Artificial Intelligence Expert & Researcher.
+     Email: javafolabi@gmail.com
+     GitHub: https://github.com/victor-iyiola
+
+   @project
+     File: train_bertffn_estimator.py
+     Package: training
+     Created on 5 August, 2019 @ 01:52 PM.
+
+   @license
+     BSD-3 Clause license.
+     Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
+"""
+
 import os
-import argparse
 
 import tensorflow as tf
 from tensorflow import keras
 import tensorflow.keras.backend as K
+
+from config.consts import FS
 
 from diagnosis.datasets.tokenization import FullTokenizer
 from diagnosis.datasets.dataset import create_dataset_for_bert
 
 from diagnosis.models.docproduct.models import MedicalQAModelwithBert
 from diagnosis.models.docproduct.loss import qa_pair_loss, qa_pair_cross_entropy_loss
-from diagnosis.models.docproduct.metrics import qa_pair_batch_accuracy
 
 DEVICE = ["/gpu:0", "/gpu:1"]
 
 
-def train_bertffn(model_path='models/bertffn_crossentropy/bertffn',
-                  data_path='data/mqa_csv',
+def train_bertffn(model_path=FS.MODELS.BERT_FFN,
+                  data_path=FS.DATA.MQA,
                   num_epochs=20,
                   num_gpu=1,
                   batch_size=64,
                   learning_rate=2e-5,
                   validation_split=0.2,
                   loss='categorical_crossentropy',
-                  pretrained_path='pubmed_pmc_470k/',
+                  pretrained_path=FS.PRE_TRAINED.PUB_MED,
                   max_seq_len=256):
     tf.compat.v1.disable_eager_execution()
-    if loss == 'categorical_crossentropy':
-        loss_fn = qa_pair_cross_entropy_loss
-    else:
-        loss_fn = qa_pair_loss
+    # if loss == 'categorical_crossentropy':
+    #     loss_fn = qa_pair_cross_entropy_loss
+    # else:
+    #     loss_fn = qa_pair_loss
 
     K.set_floatx('float32')
+    loss_fn = qa_pair_cross_entropy_loss if loss == 'categorical_corssentropy' else qa_pair_loss
+
     tokenizer = FullTokenizer(os.path.join(pretrained_path, 'vocab.txt'))
     d = create_dataset_for_bert(
-        data_path, tokenizer=tokenizer, batch_size=batch_size,
-        shuffle_buffer=500000, dynamic_padding=False, max_seq_length=max_seq_len)
+        data_path, tokenizer=tokenizer,
+        batch_size=batch_size,
+        shuffle_buffer=500_000,
+        dynamic_padding=False,
+        max_seq_length=max_seq_len
+    )
     eval_d = create_dataset_for_bert(
-        data_path, tokenizer=tokenizer, batch_size=batch_size,
-        mode='eval', dynamic_padding=False, max_seq_length=max_seq_len,
-        bucket_batch_sizes=[64, 64, 64])
+        data_path, tokenizer=tokenizer,
+        batch_size=batch_size,
+        mode='eval',
+        dynamic_padding=False,
+        max_seq_length=max_seq_len,
+        bucket_batch_sizes=[64, 64, 64]
+    )
 
     mirrored_strategy = tf.distribute.MirroredStrategy(
         devices=DEVICE[:num_gpu])
-    global_batch_size = batch_size*num_gpu
-    learning_rate = learning_rate*1.5**num_gpu
+    global_batch_size = batch_size * num_gpu
+    learning_rate = learning_rate * 1.5 ** num_gpu
 
     # with mirrored_strategy.scope():
-    # d = create_dataset_for_bert(
-    #     data_path, batch_size=global_batch_size, shuffle_buffer=100000)
+    #     d = create_dataset_for_bert(
+    #         data_path, batch_size=global_batch_size,
+    #         shuffle_buffer=100000
+    #     )
 
     # d_iter = mirrored_strategy.make_dataset_iterator(d)
     input_layer = {
@@ -60,27 +90,36 @@ def train_bertffn(model_path='models/bertffn_crossentropy/bertffn',
         'a_segment_ids': keras.Input(shape=(None, ), name='a_segment_ids'),
     }
 
-    base_model = MedicalQAModelwithBert(config_file=os.path.join(
-        pretrained_path, 'bert_config.json'),
-        checkpoint_file=os.path.join(pretrained_path, 'biobert_model.ckpt'))
+    base_model = MedicalQAModelwithBert(
+        config_file=os.path.join(pretrained_path, 'bert_config.json'),
+        checkpoint_file=os.path.join(pretrained_path, 'biobert_model.ckpt')
+    )
     outputs = base_model(input_layer)
 
     medical_qa_model = keras.Model(inputs=input_layer, outputs=outputs)
     optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=learning_rate)
     # optimizer = tf.keras.optimizers.Adam(lr=learning_rate)
-    medical_qa_model.compile(
-        optimizer=optimizer, loss=loss)
+    medical_qa_model.compile(optimizer=optimizer, loss=loss)
 
     config = tf.estimator.RunConfig(
-        train_distribute=mirrored_strategy, eval_distribute=mirrored_strategy)
+        train_distribute=mirrored_strategy,
+        eval_distribute=mirrored_strategy
+    )
 
     estimator = tf.keras.estimator.model_to_estimator(
-        medical_qa_model, model_dir=model_path)
+        medical_qa_model,
+        model_dir=model_path
+    )
 
     def train_input_fn():
         return create_dataset_for_bert(
-            data_path, tokenizer=tokenizer, batch_size=batch_size,
-            shuffle_buffer=500000, dynamic_padding=False, max_seq_length=max_seq_len)
+            data_path, tokenizer=tokenizer,
+            batch_size=batch_size,
+            shuffle_buffer=500_000,
+            dynamic_padding=False,
+            max_seq_length=max_seq_len
+        )
+
     estimator.train(train_input_fn, steps=100)
 
     epochs = num_epochs

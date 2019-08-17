@@ -1,8 +1,30 @@
+"""Train the BERT-FFN similarity embedding model.
+
+   @author
+     Victor I. Afolabi
+     Artificial Intelligence Expert & Researcher.
+     Email: javafolabi@gmail.com
+     GitHub: https://github.com/victor-iyiola
+
+   @project
+     File: train_bertffn.py
+     Package: training
+     Created on 5 August, 2019 @ 01:52 PM.
+
+   @license
+     BSD-3 Clause license.
+     Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
+"""
+import sys
+sys.path.append('..')
+
 import os
 import argparse
 
 import tensorflow as tf
 import tensorflow.keras.backend as K
+
+from config.consts import FS
 
 from diagnosis.datasets.dataset import create_dataset_for_bert
 from diagnosis.datasets.tokenization import FullTokenizer
@@ -12,15 +34,15 @@ from diagnosis.models.docproduct.loss import qa_pair_loss, qa_pair_cross_entropy
 from diagnosis.models.docproduct.metrics import qa_pair_batch_accuracy
 
 
-def train_bertffn(model_path='models/bertffn_crossentropy/bertffn',
-                  data_path='data/mqa_csv',
+def train_bertffn(model_path=FS.MODELS.BERT_FFN,
+                  data_path=FS.DATA.MQA,
                   num_epochs=20,
                   num_gpu=1,
                   batch_size=64,
                   learning_rate=2e-5,
                   validation_split=0.2,
                   loss='categorical_crossentropy',
-                  pretrained_path='models/pubmed_pmc_470k/',
+                  pretrained_path=FS.PRE_TRAINED.PUB_MED,
                   max_seq_len=256):
     """A function to train BertFFNN similarity embedding model.
 
@@ -44,32 +66,51 @@ def train_bertffn(model_path='models/bertffn_crossentropy/bertffn',
         max_seq_len {int} -- Max sequence length of model(No effects if dynamic padding is enabled) (default: {256})
     """
     tf.compat.v1.disable_eager_execution()
-    if loss == 'categorical_crossentropy':
-        loss_fn = qa_pair_cross_entropy_loss
-    else:
-        loss_fn = qa_pair_loss
+    # if loss == 'categorical_crossentropy':
+    #     loss_fn = qa_pair_cross_entropy_loss
+    # else:
+    #     loss_fn = qa_pair_loss
+    loss_fn = qa_pair_cross_entropy_loss if loss == 'categorical_crossentropy' else qa_pair_loss
     K.set_floatx('float32')
+
     tokenizer = FullTokenizer(os.path.join(pretrained_path, 'vocab.txt'))
     d = create_dataset_for_bert(
-        data_path, tokenizer=tokenizer, batch_size=batch_size,
-        shuffle_buffer=500000, dynamic_padding=True, max_seq_length=max_seq_len)
+        data_path, tokenizer=tokenizer,
+        batch_size=batch_size,
+        shuffle_buffer=500_000,
+        dynamic_padding=True,
+        max_seq_length=max_seq_len
+    )
     eval_d = create_dataset_for_bert(
-        data_path, tokenizer=tokenizer, batch_size=batch_size,
-        mode='eval', dynamic_padding=True, max_seq_length=max_seq_len,
-        bucket_batch_sizes=[64, 64, 64])
+        data_path, tokenizer=tokenizer,
+        batch_size=batch_size,
+        mode='eval',
+        dynamic_padding=True,
+        max_seq_length=max_seq_len,
+        bucket_batch_sizes=[64, 64, 64]
+    )
 
     medical_qa_model = MedicalQAModelwithBert(
-        config_file=os.path.join(
-            pretrained_path, 'bert_config.json'),
-        checkpoint_file=os.path.join(pretrained_path, 'biobert_model.ckpt'))
+        config_file=os.path.join(pretrained_path, 'bert_config.json'),
+        checkpoint_file=os.path.join(pretrained_path, 'biobert_model.ckpt')
+    )
     optimizer = tf.keras.optimizers.Adam(lr=learning_rate)
+
     medical_qa_model.compile(
-        optimizer=optimizer, loss=loss_fn, metrics=[qa_pair_batch_accuracy])
+        optimizer=optimizer,
+        loss=loss_fn,
+        metrics=[qa_pair_batch_accuracy]
+    )
 
     epochs = num_epochs
 
     callback = tf.keras.callbacks.ModelCheckpoint(
-        model_path, verbose=1, save_weights_only=True, save_best_only=False, period=1)
+        model_path,
+        verbose=1,
+        save_weights_only=True,
+        save_best_only=False,
+        period=1
+    )
 
     medical_qa_model.fit(d, epochs=epochs, callbacks=[callback])
     medical_qa_model.summary()

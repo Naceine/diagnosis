@@ -23,8 +23,7 @@ class FFN(tf.keras.layers.Layer):
             residual=True,
             name='FFN',
             **kwargs):
-        """Simple Dense wrapped with various layers
-        """
+        """Simple Dense wrapped with various layers."""
 
         super(FFN, self).__init__(name=name, **kwargs)
         self.hidden_size = hidden_size
@@ -80,7 +79,9 @@ class MedicalQAModelwithBert(tf.keras.Model):
             build=build)
         if checkpoint_file is not None:
             load_model_weights_from_checkpoint(
-                model=self.biobert, config=config, checkpoint_file=checkpoint_file, training=False)
+                model=self.biobert, config=config,
+                checkpoint_file=checkpoint_file,
+                training=False)
         self.q_ffn_layer = FFN(
             hidden_size=hidden_size,
             dropout=dropout,

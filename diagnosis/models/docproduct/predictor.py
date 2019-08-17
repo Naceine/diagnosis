@@ -2,7 +2,6 @@ import os
 import re
 import json
 
-from time import time
 from collections import defaultdict
 from multiprocessing import Pool, cpu_count
 
@@ -15,6 +14,7 @@ import tensorflow as tf
 
 from tqdm import tqdm
 
+from config.consts import FS
 from .models import MedicalQAModelwithBert
 from diagnosis.datasets.dataset import convert_text_to_feature
 from diagnosis.datasets.tokenization import FullTokenizer
@@ -203,9 +203,8 @@ class RetreiveQADoc(object):
     def __init__(self,
                  pretrained_path=None,
                  ffn_weight_file=None,
-                 bert_ffn_weight_file='models/bertffn_crossentropy/bertffn',
-                 embedding_file='qa_embeddings/bertffn_crossentropy.zip'
-                 ):
+                 bert_ffn_weight_file=FS.MODELS.BERT_FFN,
+                 embedding_file=FS.EMBEDDINGS.BERT_FFN_ZIP):
         super(RetreiveQADoc, self).__init__()
         self.qa_embed = QAEmbed(
             pretrained_path=pretrained_path,
@@ -225,11 +224,11 @@ class RetreiveQADoc(object):
 
 class GenerateQADoc(object):
     def __init__(self,
-                 pretrained_path='models/pubmed_pmc_470k/',
+                 pretrained_path=FS.PRE_TRAINED.PUB_MED,
                  ffn_weight_file=None,
-                 bert_ffn_weight_file='models/bertffn_crossentropy/bertffn',
-                 gpt2_weight_file='models/gpt2',
-                 embedding_file='qa_embeddings/bertffn_crossentropy.zip'
+                 bert_ffn_weight_file=FS.MODELS.BERT_FFN,
+                 gpt2_weight_file=FS.MODELS.GPT2,
+                 embedding_file=FS.EMBEDDINGS.BERT_FFN_ZIP
                  ):
         super(GenerateQADoc, self).__init__()
         tf.compat.v1.disable_eager_execution()
@@ -308,5 +307,7 @@ class GenerateQADoc(object):
 
 
 if __name__ == "__main__":
+    from config.util import Log
+
     gen = GenerateQADoc()
-    print(gen.predict('my eyes hurt'))
+    Log.info(gen.predict('my eyes hurt'))

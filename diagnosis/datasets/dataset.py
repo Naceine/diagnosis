@@ -134,9 +134,8 @@ def create_dataset_for_ffn(
         data_dir, '*_FFN_{0}.tfrecord'.format((mode))))
     if not tfrecord_file_list:
         print('TF Record not found')
-        make_tfrecord(
-            data_dir, create_generator_for_ffn,
-            ffn_serialize_fn, 'FFN')
+        make_tfrecord(data_dir, create_generator_for_ffn,
+                      ffn_serialize_fn, 'FFN')
 
     dataset = tf.data.TFRecordDataset(tfrecord_file_list)
 
@@ -145,8 +144,8 @@ def create_dataset_for_ffn(
             'features': tf.io.FixedLenFeature([2*768], tf.float32),
             'labels': tf.io.FixedLenFeature([], tf.int64, default_value=0),
         }
-        feature_dict = tf.io.parse_single_example(
-            example_proto, feature_description)
+        feature_dict = tf.io.parse_single_example(example_proto,
+                                                  feature_description)
         return tf.reshape(feature_dict['features'], (2, 768)), feature_dict['labels']
     dataset = dataset.map(_parse_ffn_example)
 
@@ -154,8 +153,8 @@ def create_dataset_for_ffn(
         dataset = dataset.shuffle(shuffle_buffer)
 
     dataset = dataset.prefetch(prefetch)
-
     dataset = dataset.batch(batch_size)
+
     return dataset
 
 
@@ -257,8 +256,9 @@ def convert_examples_to_features(tokenizer, examples, max_seq_length=256, dynami
 def convert_text_to_feature(text, tokenizer, max_seq_length, dynamic_padding=False):
     example = InputExample(
         guid=None, text_a=text)
-    features = convert_examples_to_features(
-        tokenizer, [example], max_seq_length, dynamic_padding=dynamic_padding)
+    features = convert_examples_to_features(tokenizer, [example],
+                                            max_seq_length,
+                                            dynamic_padding=dynamic_padding)
     return features
 
 
@@ -330,7 +330,8 @@ def bert_serialize_fn(features):
             feature[5].flatten()),
         'a_input_shape': _int64_list_feature(
             feature[3].shape),
-        'labels': _int64_feature(labels)}
+        'labels': _int64_feature(labels)
+    }
     example_proto = tf.train.Example(
         features=tf.train.Features(feature=features_tuple))
     return example_proto.SerializeToString()
@@ -353,9 +354,11 @@ def create_dataset_for_bert(
         data_dir, '*_BertFFN_{0}.tfrecord'.format((mode))))
     if not tfrecord_file_list:
         print('TF Record not found')
-        make_tfrecord(
-            data_dir, create_generator_for_bert,
-            bert_serialize_fn, 'BertFFN', tokenizer=tokenizer, dynamic_padding=True, max_seq_length=max_seq_length)
+        make_tfrecord(data_dir, create_generator_for_bert,
+                      bert_serialize_fn, 'BertFFN',
+                      tokenizer=tokenizer,
+                      dynamic_padding=True,
+                      max_seq_length=max_seq_length)
         tfrecord_file_list = glob(os.path.join(
             data_dir, '*_BertFFN_{0}.tfrecord'.format((mode))))
 

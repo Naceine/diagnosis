@@ -14,6 +14,8 @@
      Apache 2.0 License
      Copyright (c) 2019. Victor I. Afolabi. All rights reserved.
 """
+# import sys
+# sys.path.append('..')
 
 import argparse
 import infermedica_api
