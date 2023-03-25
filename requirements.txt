@@ -12,6 +12,6 @@ sklearn
 Keras
 keras-pos-embd==0.9.0
 keras-transformer==0.21.0
-tensorflow==2.0.0-alpha0
+tensorflow==2.11.1
 tensorflow-gpu==2.0.0-alpha0
 gpt2_estimator
